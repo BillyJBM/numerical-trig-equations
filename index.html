@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Trig Equations – Numerical Values</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+  margin: 0;
+  padding: 0;
+}
+.card {
+  max-width: 640px;
+  margin: 40px auto;
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+h1 { text-align: center; }
+.score { text-align: center; font-weight: bold; }
+.question { margin: 20px 0; font-size: 1.15em; }
+.options {
+  display: grid;
+  gap: 10px;
+}
+button {
+  padding: 12px;
+  font-size: 1em;
+  border-radius: 8px;
+  border: none;
+  background: #e2e8f0;
+  cursor: pointer;
+}
+button:hover:not(:disabled) { background: #cbd5e1; }
+button:disabled { opacity: 0.6; cursor: not-allowed; }
+.feedback {
+  margin-top: 14px;
+  text-align: center;
+  font-weight: bold;
+}
+.footer {
+  text-align: center;
+  font-size: 0.85em;
+  color: #555;
+  margin-top: 18px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+<h1>Trig Equations (Calculator Values)</h1>
+
+<div class="score" id="scoreDisplay"></div>
+
+<div class="question" id="questionText"></div>
+
+<div class="options" id="options"></div>
+
+<div class="feedback" id="feedback"></div>
+
+<div class="footer">
+One attempt only • Mixed degrees & radians
+</div>
+</div>
+
+<script>
+const MAX_SCORE = 10;
+
+const questions = [
+  {
+    eq: "cos θ = −1/4",
+    domain: "0° ≤ θ ≤ 360°",
+    correct: "104°, 256°",
+    options: ["104°, 256°", "76°, 284°", "90°, 270°", "60°, 300°"]
+  },
+  {
+    eq: "sin θ = 0",
+    domain: "0 ≤ θ ≤ 2π",
+    correct: "0, π, 2π",
+    options: ["0, π, 2π", "π/2, 3π/2", "0, 2π", "π"]
+  },
+  {
+    eq: "tan θ = −3.1",
+    domain: "0° ≤ θ ≤ 360°",
+    correct: "108°, 288°",
+    options: ["108°, 288°", "72°, 252°", "72°, 288°", "108°, 252°"]
+  },
+  {
+    eq: "sin θ = −0.421",
+    domain: "0° ≤ θ ≤ 360°",
+    correct: "205°, 335°",
+    options: ["205°, 335°", "25°, 155°", "155°, 335°", "205°, 155°"]
+  },
+  {
+    eq: "tan θ = 1.2",
+    domain: "0 ≤ θ ≤ 2π",
+    correct: "0.876, 4.018",
+    options: ["0.876, 4.018", "0.876", "1.694, 4.836", "2.266, 5.407"]
+  },
+  {
+    eq: "cos θ = 0.7816",
+    domain: "0° ≤ θ ≤ 360°",
+    correct: "38°, 322°",
+    options: ["38°, 322°", "52°, 308°", "142°, 218°", "90°, 270°"]
+  },
+  {
+    eq: "sin θ = 1/11",
+    domain: "0 ≤ θ ≤ 2π",
+    correct: "0.0909, 3.051",
+    options: ["0.0909, 3.051", "1.480, 4.802", "0.0909", "3.051"]
+  },
+  {
+    eq: "cos θ = −1/√3",
+    domain: "0° ≤ θ ≤ 360°",
+    correct: "125°, 235°",
+    options: ["125°, 235°", "55°, 305°", "145°, 215°", "60°, 300°"]
+  }
+];
+
+let score = 0;
+let current;
+let active = true;
+
+function shuffle(arr) {
+  return arr.sort(() => Math.random() - 0.5);
+}
+
+function loadQuestion() {
+  active = true;
+  current = questions[Math.floor(Math.random() * questions.length)];
+
+  document.getElementById("scoreDisplay").textContent =
+    `Score: ${score} / ${MAX_SCORE}`;
+
+  document.getElementById("feedback").textContent = "";
+
+  document.getElementById("questionText").innerHTML =
+    `<strong>Solve:</strong> ${current.eq}<br>
+     <em>for ${current.domain}</em>`;
+
+  const optionsDiv = document.getElementById("options");
+  optionsDiv.innerHTML = "";
+
+  shuffle([...current.options]).forEach(opt => {
+    const btn = document.createElement("button");
+    btn.textContent = opt;
+    btn.onclick = () => checkAnswer(opt === current.correct);
+    optionsDiv.appendChild(btn);
+  });
+}
+
+function checkAnswer(isCorrect) {
+  if (!active) return;
+  active = false;
+
+  document.querySelectorAll("button").forEach(b => b.disabled = true);
+
+  if (isCorrect) {
+    score++;
+    document.getElementById("feedback").textContent = "✅ Correct!";
+  } else {
+    document.getElementById("feedback").textContent =
+      `❌ Incorrect. Correct answer: ${current.correct}`;
+  }
+
+  if (score >= MAX_SCORE) {
+    document.getElementById("feedback").textContent += " 🎉 Target reached!";
+    return;
+  }
+
+  setTimeout(loadQuestion, 2200);
+}
+
+loadQuestion();
+</script>
+
+</body>
+</html>
+``
